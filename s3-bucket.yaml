@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Create an S3 bucket with versioning and attach an S3 PutObject policy.
+
+Resources:
+  MyS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: sqs-sns-bucket-2 # Change this to your desired bucket name
+      VersioningConfiguration:
+        Status: Enabled
+
+  MyBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref MyS3Bucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: s3:PutObject
+            Resource: !Sub "arn:aws:s3:::${MyS3Bucket}/*"
+
+Outputs:
+  MyS3BucketName:
+    Description: S3 Bucket Name
+    Value: !Ref MyS3Bucket

@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AWS CloudFormation Template to create SQS-SNS Subscription
+
+Parameters:
+  QueueName:
+    Type: String
+    Description: Name of the Queue
+    Default: DemoQueue
+  TopicName:
+    Type: String
+    Description: Name of the SNS Topic
+    Default: DemoTopic
+
+Resources:
+  #Resource to create an SNS Topic 
+  DemoTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: "Demo Topic for this tutorial"
+      TopicName: !Ref TopicName
+      
+  #Resource to create an SQS Queue    
+  DemoQueue:
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: !Ref QueueName
+      
+  #Resource to create SQS-SNS Subscription
+  DemoSubscription:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      TopicArn: !Ref DemoTopic
+      Endpoint: !GetAtt DemoQueue.Arn
+      
+  DemoQueuePolicy:
+    Type: AWS::SQS::QueuePolicy
+    Properties:
+      Queues:
+        - !Ref DemoQueue
+      PolicyDocument:
+        Id: AllowSendMessage
+        Statement:
+          - Sid: AllowSendReceiveWithinAccount
+            Effect: Allow
+            Principal:
+              AWS:
+                - !Ref AWS::AccountId
+            Action:
+              - sqs:SendMessage
+              - sqs:ReceiveMessage
+            Resource:
+              - !GetAtt DemoQueue.Arn
+          - Sid: AllowSNSTopicToSendMessage
+            Effect: Allow
+            Principal: '*'
+            Action:
+              - sqs:SendMessage
+            Resource:
+              - !GetAtt DemoQueue.Arn
+            Condition:
+              ArnEquals:
+                aws:SourceArn: !Ref DemoTopic

@@ -1,0 +1,112 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: CloudFormation template with Lambda function, IAM role, and policies.
+
+Resources:
+  LambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaSQSQueueExecutionRole
+      Policies:
+        - PolicyName: AWSLambdaBasicExecutionRole
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                  - logs:DescribeLogStreams
+                Resource: "*"
+        - PolicyName: S3PutObjectPolicy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource:
+                  - "arn:aws:s3:::sqs-sns-bucket-2/*"  # Replace with your S3 bucket ARN
+
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: lambda-sqs-sns
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: lambda-sqs-sns
+      Handler: index.lambda_handler
+      Role: !GetAtt LambdaRole.Arn
+      Code:
+        ZipFile: |
+          import json
+          import boto3
+
+          sqs = boto3.client('sqs')
+          s3 = boto3.client('s3')
+
+          def lambda_handler(event, context):
+              # Replace 'YourQueueURL' with the actual URL of your SQS queue
+              queue_url = 'https://sqs.us-east-1.amazonaws.com/759419449398/DemoQueue'
+              bucket_name = 'sqs-sns-bucket-2'
+
+              # Receive messages from the SQS queue
+              response = sqs.receive_message(
+                  QueueUrl=queue_url,
+                  MaxNumberOfMessages=10,  # Adjust as needed
+                  MessageAttributeNames=['All'],
+                  VisibilityTimeout=0,
+                  WaitTimeSeconds=0
+              )
+
+              messages = response.get('Messages', [])
+
+              for message in messages:
+                  # Get message body
+                  message_body = json.loads(message['Body'])
+
+                  # Generate a unique object key for S3
+                  object_key = f'messages/{message["MessageId"]}.json'
+
+                  # Upload the message data to S3
+                  s3.put_object(
+                      Bucket=bucket_name,
+                      Key=object_key,
+                      Body=json.dumps(message_body)
+                  )
+
+                  # Delete the processed message from the SQS queue
+                  sqs.delete_message(
+                      QueueUrl=queue_url,
+                      ReceiptHandle=message['ReceiptHandle']
+                  )
+
+                  print(f"Message stored in S3 at s3://{bucket_name}/{object_key}")
+
+              return {
+                  'statusCode': 200,
+                  'body': json.dumps('Messages processed and stored in S3')
+              }
+      Runtime: python3.8
+      Timeout: 60  # Adjust as needed
+
+  LambdaFunctionPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !GetAtt LambdaFunction.Arn
+      Principal: sns.amazonaws.com  # Update to match your SNS principal if needed
+
