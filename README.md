@@ -42,7 +42,7 @@ or
 
 -aws lambda invoke --invocation-type RequestResponse --function-name lambda-sqs-sns --log-type Tail outputfile.txt;  more outputfile.txt
 
-7. **Cleanup**
+**Cleanup**
 
 Don't forget to delete your CloudFormation stack and resources when you're finished to avoid incurring unnecessary costs. You can use the aws cloudformation delete-stack command as described earlier.
 
