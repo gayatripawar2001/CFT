@@ -1,6 +1,13 @@
 # CloudFormation Template README
 
-This README provides instructions for using the CloudFormation template provided in this repository. The template is designed to create 
+This README provides instructions for using the CloudFormation template provided in this repository. The template is designed to create the below:
+1) An SQS queue which subscribes to a SNS topic based on a particular message type
+2) A lambda function which is listening to the SQS Queue (in point 1) events and writing themessages body to s3
+3) S3 bucket configured with versioning and lifecycle polices for that data
+4) Necessary IAM policies and roles required for this use-case
+5) Also, some improvements for this infra based on efficiency and security pointof view.
+6) Include a Readme describing the work and how to run the stack
+7) Add a script to run with the commands to run the stack
 
 ## Prerequisites
 
@@ -59,7 +66,7 @@ Before you proceed, make sure you have the following prerequisites:
 
 ## Cleanup
 
-Don't forget to delete your CloudFormation stack and resources when you're finished to avoid incurring unnecessary costs. You can use the aws cloudformation delete-stack command as described earlier.
+Don't forget to delete your CloudFormation stack and resources when you're finished to avoid incurring unnecessary costs. You can use the aws cloudformation delete-stack command.
 
  -aws cloudformation delete-stack --stack-name "yourstackname"
 
