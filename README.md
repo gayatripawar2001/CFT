@@ -24,7 +24,7 @@ Before you proceed, make sure you have the following prerequisites:
   to the S3 bucket
   
 - And Created the IAM role and permissions attached to the S3 bucket and lambda function
-- 
+  
 3. **script** :create python script and run the script that will run the below commands and create a stacks 
 
 **Create stack** :
@@ -43,7 +43,7 @@ Before you proceed, make sure you have the following prerequisites:
 
 -aws lambda invoke --invocation-type RequestResponse --function-name lambda-sqs-sns --log-type Tail outputfile.txt;  more outputfile.txt
 
-##**Cleanup**
+## **Cleanup**
 
 Don't forget to delete your CloudFormation stack and resources when you're finished to avoid incurring unnecessary costs. You can use the aws cloudformation delete-stack command as described earlier.
 
