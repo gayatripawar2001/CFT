@@ -42,10 +42,11 @@ Before you proceed, make sure you have the following prerequisites:
    -aws lambda invoke --invocation-type RequestResponse --function-name lambda-sqs-sns --log-type Tail outputfile.txt;  more outputfile.txt
 
 ## Efficiency and Security Improvements:
--  Use AWS CloudFormation Nested Stacks: If your infrastructure is complex, consider using AWS CloudFormation nested stacks to modularize your 
+
+   Use AWS CloudFormation Nested Stacks: If your infrastructure is complex, consider using AWS CloudFormation nested stacks to modularize your 
    templates. This can make it easier to manage and update your infrastructure.
--  Implement robust error handling in your Lambda function to handle failures gracefully.
--  loudWatch Alarms and Monitoring: Set up CloudWatch alarms to monitor resource utilization and trigger actions (e.g., scaling) based on 
+   Implement robust error handling in your Lambda function to handle failures gracefully.
+   cloudWatch Alarms and Monitoring: Set up CloudWatch alarms to monitor resource utilization and trigger actions (e.g., scaling) based on 
    predefined thresholds. This helps in proactive management of your resources
    
 **Security improvements:**
