@@ -35,7 +35,7 @@ Resources:
                 Action:
                   - s3:PutObject
                 Resource:
-                  - "arn:aws:s3:::sqs-sns-bucket-2/*"  # Replace with your S3 bucket ARN
+                  - "arn:aws:s3:::sqs-sns-bucket-24/*"  # Replace with your S3 bucket ARN
 
   LambdaFunction:
     Type: AWS::Lambda::Function
