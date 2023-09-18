@@ -39,7 +39,7 @@ Before you proceed, make sure you have the following prerequisites:
 
 6. **Invoke lambda function** :
 
-  -aws lambda invoke --invocation-type RequestResponse --function-name lambda-sqs-sns --log-type Tail outputfile.txt;  more outputfile.txt
+   -aws lambda invoke --invocation-type RequestResponse --function-name lambda-sqs-sns --log-type Tail outputfile.txt;  more outputfile.txt
 
 ## Cleanup
 
