@@ -5,9 +5,19 @@ Resources:
   MyS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: sqs-sns-bucket-2 # Change this to your desired bucket name
+      BucketName: sqs-sns-bucket-24 # Change this to your desired bucket name
       VersioningConfiguration:
         Status: Enabled
+      AccessControl: Private
+      LifecycleConfiguration:
+        Rules:
+          - Id: GlacierRule
+            Prefix: glacier
+            Status: Enabled
+            ExpirationInDays: 365
+            Transitions:
+              - TransitionInDays: 1
+                StorageClass: GLACIER
 
   MyBucketPolicy:
     Type: AWS::S3::BucketPolicy
