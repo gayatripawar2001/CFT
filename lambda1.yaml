@@ -61,7 +61,7 @@ Resources:
           def lambda_handler(event, context):
               # Replace 'YourQueueURL' with the actual URL of your SQS queue
               queue_url = 'https://sqs.us-east-1.amazonaws.com/759419449398/DemoQueue'
-              bucket_name = 'sqs-sns-bucket-2'
+              bucket_name = 'sqs-sns-bucket-24'
 
               # Receive messages from the SQS queue
               response = sqs.receive_message(
